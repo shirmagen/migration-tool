@@ -1,4 +1,5 @@
 const sql = require("mssql/msnodesqlv8");
+
 const conn = new sql.ConnectionPool({
   database: "migration-tool",
   server: "localhost\\SQLEXPRESS",
@@ -7,8 +8,9 @@ const conn = new sql.ConnectionPool({
     trustedConnection: true
   }
 });
+
 conn.connect().then(() => {
-    console.log('connected')
+    console.log('sql connected')
     const request = new sql.Request(conn);
 
     request.query('select * from dbo.Basket', function (err, recordset) {
@@ -19,6 +21,4 @@ conn.connect().then(() => {
         conn.close();
     });
     
-  // ... sproc call, error catching, etc
-  // example: https://github.com/patriksimek/node-mssql#request
 });
