@@ -1,30 +1,27 @@
 import empty from 'http-reject-empty';
 import _ from 'lodash';
-import Basket from './basket.model';
+import {Basket} from './basket.model';
 
-export function index () {
+export function find () {
   return Basket.find({});
 }
 
-export function show ({params: {id}}) {
+export function findById ({params: {id}}) {
   return Basket.findById(id)
     .then(empty);
 }
 
-export function create ({body}, res) {
-  const data = _.pick(body, ['grade', 'number']);
+export async function create (body) {
+  const result = await Basket.create(body);
 
-  return Basket.create(data)
-    .then(empty)
-    .then(basket => {
-      res.status(201);
+    if(!result) {
+      return console.log(basket + 'failed to be inserted to mongo db');
+    }
 
-      return basket;
-    });
+    return result;
 }
 
 export function update ({params: {id}, body}) {
-  const data = _.pick(body, ['grade', 'number']);
 
   return Basket.findOneAndUpdate({_id: id}, {$set: data}, {new: true})
     .then(empty)
