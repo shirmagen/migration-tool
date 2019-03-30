@@ -1,38 +1,38 @@
 import empty from 'http-reject-empty';
 import _ from 'lodash';
-import Basket from './basket.model';
+import Banana from './banana.model';
 
 export function index () {
-  return Basket.find({});
+  return Banana.find({});
 }
 
 export function show ({params: {id}}) {
-  return Basket.findById(id)
+  return Banana.findById(id)
     .then(empty);
 }
 
 export function create ({body}, res) {
   const data = _.pick(body, ['grade', 'number']);
 
-  return Basket.create(data)
+  return Banana.create(data)
     .then(empty)
-    .then(basket => {
+    .then(banana => {
       res.status(201);
 
-      return basket;
+      return banana;
     });
 }
 
 export function update ({params: {id}, body}) {
   const data = _.pick(body, ['grade', 'number']);
 
-  return Basket.findOneAndUpdate({_id: id}, {$set: data}, {new: true})
+  return Banana.findOneAndUpdate({_id: id}, {$set: data}, {new: true})
     .then(empty)
     .then(_.noop);
 }
 
 export function destroy ({params: {id}}) {
-  return Basket.findOneAndRemove({_id: id})
+  return Banana.findOneAndRemove({_id: id})
     .then(empty)
     .then(_.noop);
 }
