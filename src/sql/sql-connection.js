@@ -1,24 +1,16 @@
 const sql = require("mssql/msnodesqlv8");
 
-const conn = new sql.ConnectionPool({
-  database: "migration-tool",
-  server: "localhost\\SQLEXPRESS",
-  driver: "msnodesqlv8",
-  options: {
-    trustedConnection: true
-  }
-});
+export const createRequest = conn => new sql.Request(conn);
 
-conn.connect().then(() => {
-    console.log('sql connected')
-    const request = new sql.Request(conn);
+export const getSqlConnectionObject = () => new sql.ConnectionPool({
+    database: "migration-tool",
+    server: "localhost\\SQLEXPRESS",
+    driver: "msnodesqlv8",
+    options: {
+      trustedConnection: true
+    }
+  }); 
 
-    request.query('select * from dbo.Basket', function (err, recordset) {
-        if (err)
-            console.log(err);
-        else
-        console.log(recordset.recordsets[0]);
-        conn.close();
-    });
-    
-});
+export const connectSqlDb = async conn => await conn.conect();
+
+export const disconnectSqlDb = async conn => await conn.close(); 
