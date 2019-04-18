@@ -8,3 +8,5 @@ export const basket1Schema = new mongoose.Schema({
   });
 
 export const Basket = mongoose.model('Basket', basket1Schema);
+
+export const ctor = basket => new Basket({name: basket.Name, banana: basket.Banana});

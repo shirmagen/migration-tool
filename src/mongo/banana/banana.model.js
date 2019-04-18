@@ -7,3 +7,5 @@ export const banana1Schema = new mongoose.Schema({
   });
 
 export const Banana = mongoose.model('Banana', banana1Schema);
+
+export const ctor = banana => new Banana({name: banana.Name});

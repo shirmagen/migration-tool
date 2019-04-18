@@ -11,6 +11,6 @@ export const getSqlConnectionObject = () => new sql.ConnectionPool({
     }
   }); 
 
-export const connectSqlDb = async conn => await conn.conect();
+export const connectSqlDb = async conn => await conn.connect();
 
 export const disconnectSqlDb = async conn => await conn.close(); 

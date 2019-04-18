@@ -1,24 +1,15 @@
-import {Basket} from './mongo/basket/basket.model'
-import {connectMongoDb, disconnectMongoDb} from './mongo/mongo-connection';
-import {connectSqlDb, getSqlConnectionObject, createRequest} from './sql/sql-connection'
-import {getAllBaskets} from './sql/basket/basket.controller'
-import {createBasket} from './mongo/basket/index';
+import {migrateCollection} from './migration/migration.controller';
+import {ctor as BasketCtor, Basket} from './mongo/basket/basket.model';
+import {ctor as BananaCtor, Banana} from './mongo/banana/banana.model';
 
-const bla = async () => {
+const migrate = async () => {
     try {
-        connectMongoDb();
-        const sqlConnection = getSqlConnectionObject();
-        await sqlConnection.connect();
-        const req = createRequest(sqlConnection);
-        const sqlBaskets = await getAllBaskets(req);
-        sqlConnection.close();
-        const basket1 = new Basket({ name: sqlBaskets[0].Name });
-        console.log(basket1);
-        await createBasket(basket1);
-        disconnectMongoDb();
+        migrateCollection('Basket', BasketCtor, Basket);
+        migrateCollection('Banana', BananaCtor, Banana);
+
     } catch (err) {
         console.log('caught an error:' + err);
     }
 }
 
-bla();
+migrate();
