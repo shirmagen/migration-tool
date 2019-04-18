@@ -1,18 +1,33 @@
 import {getAll} from '../sql/base.controller';
 import {connectMongoDb, disconnectMongoDb} from '../mongo/mongo-connection';
-import {connectSqlDb, getSqlConnectionObject, createRequest} from '../sql/sql-connection'
-import { Basket } from '../mongo/basket/basket.model';
+import {connectSqlDb, getSqlConnectionObject, createRequest, disconnectSqlDb} from '../sql/sql-connection'
 
 export const migrateCollection = async (collectionNameInSql, ctor, model) => {
     const sqlConnection = getSqlConnectionObject();
     await connectSqlDb(sqlConnection);
-    const req = createRequest(sqlConnection);
-    const allDocsInCollection = await getAll(req, collectionNameInSql);
-    allDocsInCollection.map(async (doc) => {
-        const mongoDoc = ctor(doc);
-        connectMongoDb();
-        await model.create(mongoDoc);
-        disconnectMongoDb();
-    });
-
+    const sqlRequest = createRequest(sqlConnection);
+    const allObjsInTable = await getAll(sqlRequest, collectionNameInSql);
+    disconnectSqlDb(sqlConnection);
+    connectMongoDb();
+    await saveSqlObjsInMongo(allObjsInTable, ctor, model);
+    // disconnectMongoDb();
 };
+
+const saveSqlObjsInMongo = async (allObjsInTable, ctor, model) => {
+    await allObjsInTable.map(async (doc) => {
+        const mongoDoc = ctor(doc);
+        await model.create(mongoDoc);
+    });
+};
+
+async function setConnections(sqlConnection, sqlRequest) {
+    sqlConnection = getSqlConnectionObject();
+    await connectSqlDb(sqlConnection);
+    sqlRequest = createRequest(sqlConnection);
+    connectMongoDb();
+};
+
+const closeConnections = async (sqlConnection) => {
+    disconnectSqlDb(sqlConnection);
+    disconnectMongoDb();
+;}

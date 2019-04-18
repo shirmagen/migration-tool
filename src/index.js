@@ -4,6 +4,7 @@ import {ctor as BananaCtor, Banana} from './mongo/banana/banana.model';
 
 const migrate = async () => {
     try {
+        
         migrateCollection('Basket', BasketCtor, Basket);
         migrateCollection('Banana', BananaCtor, Banana);
 
