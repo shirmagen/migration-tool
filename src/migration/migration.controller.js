@@ -7,17 +7,17 @@ export const migrateCollection = async (collectionNameInSql, ctor, model) => {
     await connectSqlDb(sqlConnection);
     const sqlRequest = createRequest(sqlConnection);
     const allObjsInTable = await getAll(sqlRequest, collectionNameInSql);
-    disconnectSqlDb(sqlConnection);
-    connectMongoDb();
+    await disconnectSqlDb(sqlConnection);
+    await connectMongoDb();
     await saveSqlObjsInMongo(allObjsInTable, ctor, model);
-    // disconnectMongoDb();
+    disconnectMongoDb();
 };
 
 const saveSqlObjsInMongo = async (allObjsInTable, ctor, model) => {
-    await allObjsInTable.map(async (doc) => {
+     await Promise.all(allObjsInTable.map(async (doc) => {
         const mongoDoc = ctor(doc);
         await model.create(mongoDoc);
-    });
+     }));
 };
 
 async function setConnections(sqlConnection, sqlRequest) {
