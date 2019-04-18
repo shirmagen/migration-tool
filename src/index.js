@@ -8,24 +8,17 @@ const bla = async () => {
     try {
         connectMongoDb();
         const sqlConnection = getSqlConnectionObject();
-        sqlConnection.connect().then( () => {
-            console.log(sqlConnection);
+        await sqlConnection.connect();
         const req = createRequest(sqlConnection);
-        const sqlBaskets = getAllBaskets(req); 
+        const sqlBaskets = await getAllBaskets(req);
         sqlConnection.close();
-        });
-        const basket1 = new Basket({ name: 'basket1' });
+        const basket1 = new Basket({ name: sqlBaskets[0].Name });
         console.log(basket1);
         await createBasket(basket1);
         disconnectMongoDb();
     } catch (err) {
-        // ... error checks
         console.log('caught an error:' + err);
     }
 }
 
 bla();
-// connectMongoDb();
-// const basket1 = new Basket({ name: 'basket1' });
-// createBasket(basket1);
-// disconnectMongoDb();
