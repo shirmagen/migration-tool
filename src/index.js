@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import {migrateCollection} from './migration/migration.controller';
 import {ctor as BasketCtor, Basket} from './mongo/basket/basket.model';
 import {ctor as BananaCtor, Banana} from './mongo/banana/banana.model';
